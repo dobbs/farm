@@ -1,0 +1,77 @@
+#!/bin/bash -eu
+set -o pipefail
+
+main() {
+    initialize-environment-vars
+    assert-file-privileges || report-errors-and-exit
+    ensure-owner-file
+    ensure-config-file
+    show-configs
+    exec-wiki
+}
+
+initialize-environment-vars() {
+    ERRORS=''
+    readonly OWNER_FILE=/home/app/.wiki/$DOMAIN.owner.json
+    readonly CONFIG_FILE=/home/app/.wiki/config.json
+}
+
+assert-file-privileges() {
+    [ -w /home/app/.wiki ] \
+      || ERRORS="app cannot write to /home/app/.wiki\n${ERRORS}"
+
+    [ ${#ERRORS} == 0 ]
+}
+
+report-errors-and-exit() {
+    echo -e $ERRORS
+    echo "exiting."
+    exit 1
+}
+
+ensure-owner-file() {
+    if [ ! -r "$OWNER_FILE" ]; then
+      jq -n --arg name "$OWNER_NAME" --arg secret $(random-string) \
+         '.name = $name | .friend.secret = $secret' > $OWNER_FILE
+    fi
+}
+
+ensure-config-file() {
+    if [ ! -r "$CONFIG_FILE" ]; then
+      > $CONFIG_FILE \
+      jq -n -M \
+        --arg admin $(jq -r .friend.secret $OWNER_FILE) \
+        --arg random $(random-string) \
+        --arg cookie $COOKIE \
+        --arg domain $DOMAIN \
+        --arg owner $OWNER_FILE \
+        '
+.admin = $admin
+| .autoseed = true
+| .farm = true
+| .cookieSecret = $random
+| .secure_cookie = ("secure" == $cookie)
+| .security_type = "friends"
+| .wikiDomains[$domain].id = "/home/app/.wiki/\($domain).owner.json"
+'
+
+    fi
+}
+
+random-string() {
+    node -e 'console.log(require("crypto").randomBytes(64).toString("hex"))'
+}
+
+show-configs() {
+    set -x
+    ls -l $OWNER_FILE $CONFIG_FILE
+    cat $OWNER_FILE
+    cat $CONFIG_FILE
+    set +x
+}
+
+exec-wiki() {
+    exec wiki
+}
+
+main
