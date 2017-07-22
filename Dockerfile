@@ -8,6 +8,7 @@ WORKDIR /home/app
 RUN su app -c "npm install -g --prefix . wiki@0.11.4"
 RUN su app -c "mkdir .wiki"
 COPY configure-and-launch-wiki configure-and-launch-wiki
+RUN chown app configure-and-launch-wiki
 VOLUME "/home/app/.wiki"
 ENV DOMAIN=localhost
 ENV OWNER_NAME="The Owner"
