@@ -71,7 +71,7 @@ show-configs() {
 }
 
 exec-wiki() {
-    exec wiki
+    exec /home/app/bin/wiki
 }
 
 main
