@@ -49,3 +49,11 @@ docker run -p 3000:3000 -it --rm \
 
 Open http://this.localtest.me:3000 in one tab.
 Open http://that.localtest.me:3000 in another.
+
+# Development
+
+``` bash
+VERSION=0.11.4
+docker build --build-arg VERSION=$VERSION -t dobbs/farm:$VERSION .
+git tag $VERSION
+```
