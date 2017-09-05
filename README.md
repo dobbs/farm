@@ -53,7 +53,7 @@ Open http://that.localtest.me:3000 in another.
 # Development
 
 ``` bash
-VERSION=0.11.4
+VERSION=0.12.0
 docker build --build-arg VERSION=$VERSION -t dobbs/farm:$VERSION .
-git tag $VERSION
+git tag -am "" $VERSION
 ```
