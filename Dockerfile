@@ -5,8 +5,8 @@ RUN useradd --create-home app \
  && apt-get install -y --no-install-recommends \
     jq
 WORKDIR /home/app
-ARG VERSION=0.12.0
-RUN su app -c "npm install -g --prefix . wiki@$VERSION"
+ARG WIKI_PACKAGE=wiki@0.12.1
+RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su app -c "mkdir .wiki"
 COPY configure-and-launch-wiki set-owner-name ./
 RUN chown app configure-and-launch-wiki set-owner-name
