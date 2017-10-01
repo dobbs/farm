@@ -3,7 +3,8 @@ FROM node:4-slim
 RUN useradd --create-home app \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
-    jq
+    jq \
+    git
 WORKDIR /home/app
 ARG WIKI_PACKAGE=wiki@0.12.1
 RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
