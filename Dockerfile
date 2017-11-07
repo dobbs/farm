@@ -6,7 +6,7 @@ RUN useradd --create-home app \
     jq \
     git
 WORKDIR /home/app
-ARG WIKI_PACKAGE=wiki@0.12.1
+ARG WIKI_PACKAGE=wiki@0.12.2
 RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su app -c "mkdir .wiki"
 COPY configure-and-launch-wiki set-owner-name ./

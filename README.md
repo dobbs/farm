@@ -55,8 +55,8 @@ Open http://that.localtest.me:3000 in another.
 This image's tag matches the version of the included wiki software.
 
 ``` bash
-git tag -am "" '0.12.1+github'
+git tag -am "" '0.12.2'
 git push --tags
-docker build -t dobbs/farm:0.12.1+github .
-docker push dobbs/farm:0.12.1+github
+docker build -t dobbs/farm:0.12.2 .
+docker push dobbs/farm:0.12.2
 ```
