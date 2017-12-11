@@ -55,8 +55,8 @@ Open http://that.localtest.me:3000 in another.
 This image's tag matches the version of the included wiki software.
 
 ``` bash
-git tag -am "" '0.12.2'
+git tag -am "" '0.13.0'
 git push --tags
-docker build -t dobbs/farm:0.12.2 .
-docker push dobbs/farm:0.12.2
 ```
+
+The repos in Dockerhub and GitHub are configured to automatically build new tags.

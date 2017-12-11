@@ -1,4 +1,4 @@
-FROM node:4-slim
+FROM node:8-slim
 
 RUN useradd --create-home app \
  && apt-get update \
@@ -6,7 +6,7 @@ RUN useradd --create-home app \
     jq \
     git
 WORKDIR /home/app
-ARG WIKI_PACKAGE=wiki@0.12.2
+ARG WIKI_PACKAGE=wiki@0.13.0
 RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su app -c "mkdir .wiki"
 COPY configure-and-launch-wiki set-owner-name ./
