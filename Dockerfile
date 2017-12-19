@@ -6,7 +6,7 @@ RUN useradd --create-home app \
     jq \
     git
 WORKDIR /home/app
-ARG WIKI_PACKAGE=wiki@0.13.0
+ARG WIKI_PACKAGE='dobbs/wiki#apparatus'
 RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su app -c "mkdir .wiki"
 COPY configure-and-launch-wiki set-owner-name ./
