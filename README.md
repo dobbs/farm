@@ -2,6 +2,11 @@
 
 http://fed.wiki.org
 
+Although this container can run alone, I use and develop it with
+a reverse proxy.  See: https://github.com/dobbs/wiki-tls
+
+See also http://local-farm.wiki.dbbs.co for many more details.
+
 ### Get acquainted with wiki.
 
 Launch the container:
@@ -29,37 +34,11 @@ docker run -p 3000:3000 -it --rm \
 
 Visit http://localhost:3000
 
-### Make your wiki a local farm
-
-We're going to use http://localtest.me instead of localhost for our
-domain name.  See http://readme.localtest.me for more info.
-
-Let's also use a different volume for this one:
-``` bash
-docker volume create localtest.me
-```
-
-Specify the domain name and configure your wiki
-``` bash
-docker run -p 3000:3000 -it --rm \
-  -v localtest.me:/home/app/.wiki \
-  -e DOMAIN=localtest.me \
-  dobbs/farm configure-wiki
-```
-
-Now that configuration is complete, launch the wiki:
-``` bash
-docker run -p 3000:3000 -it --rm \
-  -v localtest.me:/home/app/.wiki \
-  dobbs/farm
-```
-
-Open http://this.localtest.me:3000 in one tab.
-Open http://that.localtest.me:3000 in another.
-
 # Development
 
 This image's tag matches the version of the included wiki software.
+
+Notes to self:
 
 ``` bash
 git tag -am "" '0.14.0'
