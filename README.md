@@ -39,11 +39,18 @@ Let's also use a different volume for this one:
 docker volume create localtest.me
 ```
 
-Specify the domain name when you launch your wiki
+Specify the domain name and configure your wiki
 ``` bash
 docker run -p 3000:3000 -it --rm \
   -v localtest.me:/home/app/.wiki \
   -e DOMAIN=localtest.me \
+  dobbs/farm configure-wiki
+```
+
+Now that configuration is complete, launch the wiki:
+``` bash
+docker run -p 3000:3000 -it --rm \
+  -v localtest.me:/home/app/.wiki \
   dobbs/farm
 ```
 
@@ -55,7 +62,7 @@ Open http://that.localtest.me:3000 in another.
 This image's tag matches the version of the included wiki software.
 
 ``` bash
-git tag -am "" '0.13.0'
+git tag -am "" '0.14.0'
 git push --tags
 ```
 

@@ -7,7 +7,6 @@ main() {
     ensure-owner-file
     ensure-config-file
     show-configs
-    exec-wiki
 }
 
 initialize-environment-vars() {
@@ -68,10 +67,6 @@ show-configs() {
     cat $OWNER_FILE
     cat $CONFIG_FILE
     set +x
-}
-
-exec-wiki() {
-    exec /home/app/bin/wiki
 }
 
 main
