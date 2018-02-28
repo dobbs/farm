@@ -46,3 +46,13 @@ git push --tags
 ```
 
 The repos in Dockerhub and GitHub are configured to automatically build new tags.
+
+# Publish experimental plugins
+
+``` bash
+docker build \
+  --tag dobbs/farm:0.14.0-frame \
+  --build-arg WIKI_PACKAGE='dobbs/wiki#frame' \
+  .
+docker push dobbs/farm:0.14.0-frame
+```
