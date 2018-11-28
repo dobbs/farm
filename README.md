@@ -36,12 +36,12 @@ Visit http://localhost:3000
 
 # Development
 
-This image's tag matches the version of the included wiki software.
+This image's tag does not match the version of the included wiki software.
 
 Notes to self:
 
 ``` bash
-git tag -am "" '0.14.0'
+git tag -am "" '0.50.0'
 git push --tags
 ```
 
