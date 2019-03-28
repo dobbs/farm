@@ -41,7 +41,8 @@ This image's tag does not match the version of the included wiki software.
 Notes to self:
 
 ``` bash
-git tag -am "" '0.50.0'
+docker build --tag dobbs/farm:0.51.0 .
+git tag -am "" '0.51.0'
 git push --tags
 ```
 

@@ -1,12 +1,12 @@
-FROM node:8-slim
+FROM node:10-alpine
 
-RUN useradd --create-home app \
- && apt-get update \
- && apt-get install -y --no-install-recommends \
+RUN adduser -D -h /home/app app \
+ && apk add --update --no-cache \
+    bash \
     jq \
     git
 WORKDIR /home/app
-ARG WIKI_PACKAGE=wiki@0.16.2
+ARG WIKI_PACKAGE=wiki@0.17.0
 RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su app -c "mkdir .wiki"
 COPY configure-wiki set-owner-name ./
