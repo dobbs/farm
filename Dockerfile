@@ -1,20 +1,16 @@
-FROM node:10-alpine
+FROM node:lts-alpine
 
-RUN adduser -D -h /home/app app \
- && apk add --update --no-cache \
-    bash \
-    jq \
-    git
-WORKDIR /home/app
+RUN apk add --update --no-cache \
+  dumb-init \
+  git \
+  jq
+WORKDIR "/home/node"
 ARG WIKI_PACKAGE=wiki@0.19.0
-RUN su app -c "npm install -g --prefix . $WIKI_PACKAGE"
-RUN su app -c "mkdir .wiki"
-COPY configure-wiki set-owner-name ./
-RUN chown app configure-wiki set-owner-name
-VOLUME "/home/app/.wiki"
-ENV DOMAIN=localhost
-ENV OWNER_NAME="The Owner"
-ENV COOKIE=insecure
+RUN su node -c "npm install -g --prefix . $WIKI_PACKAGE"
+RUN su node -c "mkdir -p .wiki"
+VOLUME "/home/node/.wiki"
 EXPOSE 3000
-USER app
-CMD ["/home/app/bin/wiki"]
+USER node
+ENV PATH="${PATH}:/home/node/bin"
+ENTRYPOINT ["dumb-init"]
+CMD ["wiki", "--farm", "--security_type=friends"]

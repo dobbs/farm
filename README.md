@@ -1,38 +1,37 @@
 # Federated Wiki Farm
 
-http://fed.wiki.org
+Start Playing Federated Wiki: http://start.fed.wiki
 
-Although this container can run alone, I use and develop it with
-a reverse proxy.  See: https://github.com/dobbs/wiki-tls
+### Run a local wiki farm
 
-See also http://local-farm.wiki.dbbs.co for many more details.
+    docker run -p 3000:3000 -it --rm \
+      dobbs/farm
 
-### Get acquainted with wiki.
+Visit http://localhost:3000 and http://anything.localtest.me:3000
 
-Launch the container:
-``` bash
-docker run -p 3000:3000 -it --rm \
-  dobbs/farm
-```
+### Run a local wiki that will survive a reboot
 
-Visit http://localhost:3000
+    docker run -p 3000:3000 -it --rm \
+      -v ~/.wiki:/home/node/.wiki \
+      dobbs/farm
 
-### Make your wiki survive a reboot
+Your wiki pages and configuration will be saved in the ~/.wiki folder.
 
-Create a volume:
+# Release Notes for 1.0.0
 
-``` bash
-docker volume create dot-wiki
-```
+This is a significant **breaking** change from pre-1.0 releases. Especially:
 
-Launch the container:
-``` bash
-docker run -p 3000:3000 -it --rm \
-  -v dot-wiki:/home/app/.wiki \
-  dobbs/farm
-```
+* changed the user from `app` (`uid=1001(app) gid=1001(app) groups=1001(app)`)
+  to `node` (`uid=1000(node) gid=1000(node) groups=1000(node),1000(node)`)
 
-Visit http://localhost:3000
+* no longer installing `bash`, `configure-wiki`, nor `set-owner-name`
+
+* no longer creating `/home/app/.wiki/wiki.json`
+
+Those changes in particular will impose some work on authors upgrading
+from previous versions.
+
+The last non-breaking revision is 0.52.0 https://github.com/dobbs/farm/tree/0.52.0#readme
 
 # Development
 
