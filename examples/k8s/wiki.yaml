@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dot-wiki
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wiki-config
+data:
+  config.json: |
+    {
+      "admin": "ADMIN",
+      "farm": true,
+      "cookieSecret": "RANDOM",
+      "security_type": "friends",
+      "secure_cookie": false,
+      "wikiDomains": {
+        "local": {
+          "id": "/home/node/.wiki/local.owner.json"
+        },
+        "localhost": {
+          "id": "/home/node/.wiki/local.owner.json"
+        },
+        "localtest.me": {
+          "id": "/home/node/.wiki/local.owner.json"
+        },
+        "local.dbbs.co": {
+          "id": "/home/node/.wiki/local.owner.json"
+        }
+      }
+    }
+  local.owner.json: |
+    {
+      "name": "The Owner",
+      "friend": {
+        "secret": "ADMIN"
+      }
+    }
+  install-config: |
+    #!/bin/sh
+    randomstring() {
+        node -e 'console.log(require("crypto").randomBytes(64).toString("hex"))'
+    }
+    readonly ADMIN=$(randomstring)
+    readonly COOKIE=$(randomstring)
+
+    readonly CONFIG=/home/node/.wiki/config.json
+    readonly OWNER=/home/node/.wiki/local.owner.json
+    [ -f $CONFIG ] || {
+      jq --arg admin $ADMIN  \
+         --arg cookie $COOKIE \
+         '.admin = $admin | .cookieSecret = $cookie' \
+         /etc/config/config.json \
+         > $CONFIG
+    }
+    [ -f $OWNER ] || {
+      jq --arg admin $ADMIN  \
+         '.friend.secret = $admin' \
+         /etc/config/local.owner.json \
+         > $OWNER
+    }
+    chown -R 1000:1000 /home/node/.wiki
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiki-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wiki
+  template:
+    metadata:
+      labels:
+        app: wiki
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: wiki-config
+        image: dobbs/farm:1.0.0
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          allowPrivilegeEscalation: false
+        volumeMounts:
+          - name: dot-wiki
+            mountPath: /home/node/.wiki
+          - name: config-templates
+            mountPath: /etc/config
+        command: ["sh", "/etc/config/install-config"]
+      containers:
+      - name: farm
+        image: dobbs/farm:1.0.0
+        command: ["wiki", "--config", "/home/node/.wiki/config.json"]
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+          - name: dot-wiki
+            mountPath: /home/node/.wiki
+      volumes:
+      - name: dot-wiki
+        persistentVolumeClaim:
+          claimName: dot-wiki
+      - name: config-templates
+        configMap:
+          name: wiki-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiki-service
+spec:
+  ports:
+  - name: http
+    targetPort: 3000
+    port: 80
+  selector:
+    app: wiki
