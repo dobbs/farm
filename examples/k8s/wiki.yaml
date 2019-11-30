@@ -17,57 +17,11 @@ metadata:
 data:
   config.json: |
     {
-      "admin": "ADMIN",
       "farm": true,
-      "cookieSecret": "RANDOM",
       "security_type": "friends",
       "secure_cookie": false,
-      "wikiDomains": {
-        "local": {
-          "id": "/home/node/.wiki/local.owner.json"
-        },
-        "localhost": {
-          "id": "/home/node/.wiki/local.owner.json"
-        },
-        "localtest.me": {
-          "id": "/home/node/.wiki/local.owner.json"
-        },
-        "local.dbbs.co": {
-          "id": "/home/node/.wiki/local.owner.json"
-        }
-      }
+      "allowed": "*"
     }
-  local.owner.json: |
-    {
-      "name": "The Owner",
-      "friend": {
-        "secret": "ADMIN"
-      }
-    }
-  install-config: |
-    #!/bin/sh
-    randomstring() {
-        node -e 'console.log(require("crypto").randomBytes(64).toString("hex"))'
-    }
-    readonly ADMIN=$(randomstring)
-    readonly COOKIE=$(randomstring)
-
-    readonly CONFIG=/home/node/.wiki/config.json
-    readonly OWNER=/home/node/.wiki/local.owner.json
-    [ -f $CONFIG ] || {
-      jq --arg admin $ADMIN  \
-         --arg cookie $COOKIE \
-         '.admin = $admin | .cookieSecret = $cookie' \
-         /etc/config/config.json \
-         > $CONFIG
-    }
-    [ -f $OWNER ] || {
-      jq --arg admin $ADMIN  \
-         '.friend.secret = $admin' \
-         /etc/config/local.owner.json \
-         > $OWNER
-    }
-    chown -R 1000:1000 /home/node/.wiki
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -97,18 +51,18 @@ spec:
         volumeMounts:
           - name: dot-wiki
             mountPath: /home/node/.wiki
-          - name: config-templates
-            mountPath: /etc/config
-        command: ["sh", "/etc/config/install-config"]
+        command: ["chown", "-R", "1000:1000", "/home/node/.wiki"]
       containers:
       - name: farm
         image: dobbs/farm:1.0.0
-        command: ["wiki", "--config", "/home/node/.wiki/config.json"]
+        command: ["wiki", "--config", "/etc/config/config.json"]
         ports:
         - containerPort: 3000
         volumeMounts:
           - name: dot-wiki
             mountPath: /home/node/.wiki
+          - name: config-templates
+            mountPath: /etc/config
       volumes:
       - name: dot-wiki
         persistentVolumeClaim:
