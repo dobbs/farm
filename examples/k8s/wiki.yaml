@@ -11,6 +11,14 @@ spec:
       storage: 4Gi
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: wiki-admin
+type: Opaque
+data:
+  password: c29tZSBiYWQgcGFzc3dvcmRzIGFyZSBtZW1vcmFibGU=
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: wiki-config
@@ -20,8 +28,27 @@ data:
       "farm": true,
       "security_type": "friends",
       "secure_cookie": false,
-      "allowed": "*"
+      "cookieSecret": "any-random-string-will-do-the-trick",
+      "allowed": "*",
+      "wikiDomains": {
+        "localtest.me": {
+          "id": "/home/node/.wiki/localtest.me/status/owner.json"
+        }
+      }
     }
+  owner.json: |
+    {
+      "name": "The Owner",
+      "friend": { "secret": "replaced with wiki-admin.password"}
+    }
+  init.sh: |
+    #!/bin/sh
+    cd /home/node/.wiki
+    mkdir -p localtest.me/status
+    cp /etc/wiki/config.json /home/node/.wiki
+    jq ".friend.secret = \"$wiki_admin\"" /etc/wiki/owner.json \
+      > localtest.me/status/owner.json
+    chown -R 1000:1000 .
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,31 +70,43 @@ spec:
         fsGroup: 1000
       initContainers:
       - name: wiki-config
-        image: dobbs/farm:1.0.0
+        image: dobbs/farm:restrict-new-wiki
         securityContext:
           runAsUser: 0
           runAsGroup: 0
           allowPrivilegeEscalation: false
+        env:
+          - name: wiki_admin
+            valueFrom:
+              secretKeyRef:
+                name: wiki-admin
+                key: password
         volumeMounts:
           - name: dot-wiki
             mountPath: /home/node/.wiki
-        command: ["chown", "-R", "1000:1000", "/home/node/.wiki"]
+          - name: wiki-config
+            mountPath: /etc/wiki
+        command: ["sh", "/etc/wiki/init.sh"]
       containers:
       - name: farm
-        image: dobbs/farm:1.0.0
-        command: ["wiki", "--config", "/etc/config/config.json"]
+        image: dobbs/farm:restrict-new-wiki
+        env:
+          - name: wiki_admin
+            valueFrom:
+              secretKeyRef:
+                name: wiki-admin
+                key: password
+        command: ["wiki"]
         ports:
         - containerPort: 3000
         volumeMounts:
           - name: dot-wiki
             mountPath: /home/node/.wiki
-          - name: config-templates
-            mountPath: /etc/config
       volumes:
       - name: dot-wiki
         persistentVolumeClaim:
           claimName: dot-wiki
-      - name: config-templates
+      - name: wiki-config
         configMap:
           name: wiki-config
 ---
