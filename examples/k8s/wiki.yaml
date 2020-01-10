@@ -29,12 +29,7 @@ data:
       "security_type": "friends",
       "secure_cookie": false,
       "cookieSecret": "any-random-string-will-do-the-trick",
-      "allowed": "*",
-      "wikiDomains": {
-        "localtest.me": {
-          "id": "/home/node/.wiki/localtest.me/status/owner.json"
-        }
-      }
+      "allowed": "*"
     }
   owner.json: |
     {
@@ -47,7 +42,7 @@ data:
     mkdir -p localtest.me/status
     cp /etc/wiki/config.json /home/node/.wiki
     jq ".friend.secret = \"$wiki_admin\"" /etc/wiki/owner.json \
-      > localtest.me/status/owner.json
+      > admin.json
     chown -R 1000:1000 .
 ---
 apiVersion: apps/v1
