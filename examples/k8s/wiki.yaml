@@ -42,7 +42,7 @@ spec:
       containers:
       - name: farm
         image: dobbs/farm:1.0.1
-        command: ["wiki", "--security_legacy=true", "--data=/home/node/.wiki/simple"]
+        command: ["wiki", "--farm", "--security_legacy"]
         ports:
         - containerPort: 3000
         volumeMounts:
@@ -74,6 +74,13 @@ metadata:
 spec:
   rules:
   - host: simple.localtest.me
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: wiki-service
+          servicePort: http
+  - host: "*.simple.localtest.me"
     http:
       paths:
       - path: /
