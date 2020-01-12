@@ -3,11 +3,11 @@
 There are easier ways to get started with federated wiki. Here we are
 using wiki to drive some learning about kubernetes.
 
-# We're using MacOS, Docker Desktop, and kind
+# We're using MacOS, Docker Desktop, and k3d
 
     brew cask install docker
-    brew install kind
-    kind create cluster --name wiki
+    brew install k3d
+    k3d create --publish 80:80 --name wiki
 
 # Deploy Wiki
 
@@ -15,13 +15,4 @@ using wiki to drive some learning about kubernetes.
 
 # Play with the wiki
 
-    # pbcopy & open are MacOS commands
-    kubectl port-forward svc/wiki-service 3000:80 \
-      > port-forward.log \
-      2> port-forward.err &
-    # get admin password on the clipboard
-    kubectl exec svc/wiki-service -- \
-      jq -r .admin .wiki/config.json \
-      | pbcopy
-    open http://localhost:3000
-    # login with the password on the clipboard
+    open http://simple.localtest.me
