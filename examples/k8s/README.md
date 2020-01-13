@@ -7,7 +7,13 @@ using wiki to drive some learning about kubernetes.
 
     brew cask install docker
     brew install k3d
-    k3d create --publish 80:80 --name wiki
+
+    mkdir -p ~/.wiki-k8s ~/workspace/fedwiki
+    k3d create \
+      --publish 80:80 \
+      -v "$HOME/.wiki-k8s:/macos/.wiki-k8s" \
+      -v "$HOME/workspace/fedwiki:/macos/fedwiki" \
+      --name wiki
 
 # Deploy Wiki
 
