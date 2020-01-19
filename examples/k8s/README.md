@@ -10,6 +10,7 @@ using wiki to drive some learning about kubernetes.
 
     mkdir -p ~/.wiki-k8s ~/workspace/fedwiki
     k3d create \
+      --server-arg --tls-san="127.0.0.1" \
       --publish 80:80 \
       -v "$HOME/.wiki-k8s:/macos/.wiki-k8s" \
       -v "$HOME/workspace/fedwiki:/macos/fedwiki" \
