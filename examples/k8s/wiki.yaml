@@ -19,7 +19,7 @@ spec:
       containers:
       - name: farm
         image: dobbs/farm:1.0.1
-        command: ["wiki", "--farm", "--security_legacy"]
+        command: ["wiki"]
         ports:
         - containerPort: 3000
         volumeMounts:
