@@ -16,6 +16,34 @@ using wiki to drive some learning about kubernetes.
       -v "$HOME/workspace/fedwiki:/macos/fedwiki" \
       --name wiki
 
+# example ~/.wiki-k8s/config.json
+
+    {
+      "admin": "any memorable password",
+      "autoseed": true,
+      "farm": true,
+      "cookieSecret": "any random string",
+      "secure_cookie": false,
+      "security_type": "friends",
+      "wikiDomains": {
+        "simple.localtest.me": {
+          "id": "/home/node/.wiki/config.owner.json"
+        }
+      }
+    }
+
+# example ~/.wiki-k8s/config.owner.json
+
+`.friend.secret` must match the `.admin` field from `config.json`
+
+    {
+      "name": "The Owner",
+      "friend": {
+        "secret": "any memorable password"
+      }
+    }
+
+
 # Deploy Wiki
 
     kubectl apply -f wiki.yaml
