@@ -1,0 +1,181 @@
+---
+# Source: vault/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: vault
+  labels:
+    app: vault
+    release: "vault"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: vault
+  namespace: default
+---
+# Source: vault/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "vault-config"
+  labels:
+    app: "vault"
+    release: "vault"
+data:
+  config.json: |
+    {"listener":{"tcp":{"address":"[::]:8200","cluster_address":"[::]:8201","tls_disable":true}},"storage":{"file":{"path":"/macos/.wiki-k8s/vault"}}}
+---
+# Source: vault/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  labels:
+    app: vault
+    release: vault
+  annotations:
+    {}
+spec:
+  selector:
+    matchLabels:
+      app: vault
+      release: vault
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: vault
+        release: vault
+      annotations:
+        checksum/config: 6868eb00aa48ca9485c365c3523ae431e7031233a1c046817a32c61e24ea817d
+    spec:
+      containers:
+      - name: vault
+        image: "vault:1.2.3"
+        imagePullPolicy: IfNotPresent
+        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        ports:
+        - containerPort: 8200
+          name: api
+        - containerPort: 8201
+          name: cluster-address
+        livenessProbe:
+          # Alive if Vault is successfully responding to requests
+          httpGet:
+            path: /v1/sys/health?standbyok=true&uninitcode=204&sealedcode=204&
+            port: 8200
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          # Ready depends on preference
+          httpGet:
+            path: /v1/sys/health?standbycode=204&uninitcode=204&
+            port: 8200
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        securityContext:
+          readOnlyRootFilesystem: true
+          capabilities:
+            add:
+            - IPC_LOCK
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: VAULT_API_ADDR
+            value: "http://$(POD_IP):8200"
+          - name: VAULT_CLUSTER_ADDR
+            value: "https://$(POD_IP):8201"
+          - name: VAULT_LOG_LEVEL
+            value: "info"
+        resources:
+          {}
+        volumeMounts:
+        - name: vault-config
+          mountPath: /vault/config/
+        - name: vault-root
+          mountPath: /root/
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: 'vault'
+                  release: 'vault'
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      serviceAccountName: vault
+      volumes:
+        - name: vault-config
+          configMap:
+            name: "vault-config"
+        - name: vault-root
+          emptyDir: {}
+---
+# Source: vault/templates/pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: vault
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: vault
+      release: vault
+---
+# Source: vault/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  labels:
+    app: vault
+    release: vault
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8200
+    protocol: TCP
+    targetPort: 8200
+    name: api
+  selector:
+    app: vault
+    release: vault
+---
+# Source: vault/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault
+  labels:
+    app: vault
+    release: "vault"
+---
+# Source: vault/templates/tests/test-vault-status.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "vault-vault-status-test"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: vault-vault-status-test
+    image: "vault:1.2.3"
+    env:
+      - name: VAULT_ADDR
+        value: http://vault.default:8200
+    command: ["sh", "-c", "vault status"]
+  restartPolicy: Never

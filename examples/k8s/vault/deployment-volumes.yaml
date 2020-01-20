@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+spec:
+  template:
+    spec:
+      containers:
+      - name: vault
+        volumeMounts:
+        - name: vault-data
+          mountPath: /macos/.wiki-k8s/vault
+      volumes:
+      - name: vault-data
+        hostPath:
+          path: /macos/.wiki-k8s/vault
