@@ -35,14 +35,18 @@ The last non-breaking revision is 0.52.0 https://github.com/dobbs/farm/tree/0.52
 
 # Development
 
-This image's tag does not match the version of the included wiki software.
+This image's tag does not match the version of the included wiki
+software. Our version indicates the scale of changes in this tiny
+devops pipeline. For example, when we changed the `USER` directive and
+removed the wiki config generation scripts, we bumped the major
+version from 0.50.x to 1.0.x.
 
 Notes to self:
 
 ``` bash
-docker build --tag dobbs/farm:0.51.0 .
-git tag -am "" '0.51.0'
-git push --tags
+docker build --tag dobbs/farm:1.0.2 .
+git tag -am "" '1.0.2'
+git push origin '1.0.2'
 ```
 
 The repos in Dockerhub and GitHub are configured to automatically build new tags.
