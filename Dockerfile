@@ -15,5 +15,8 @@ VOLUME "/home/node/.wiki"
 EXPOSE 3000
 USER node
 ENV PATH="${PATH}:/home/node/bin"
+# Adding this line to make local plugin development easier
+# see https://local-farm.wiki.dbbs.co/make-a-new-plugin.html
+ENV NPM_CONFIG_PREFIX="${HOME}"
 ENTRYPOINT ["dumb-init"]
 CMD ["wiki", "--farm", "--security_type=friends"]
