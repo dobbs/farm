@@ -5,11 +5,8 @@ RUN apk add --update --no-cache \
   git \
   jq
 WORKDIR "/home/node"
-ARG WIKI_PACKAGE=wiki@0.21.0
-ARG WIKI_CLIENT=wiki-client@0.20.1
-ARG WIKI_SERVER=wiki-server@0.17.5
-RUN su node -c "npm install -g --prefix . $WIKI_PACKAGE" \
- && su node -c "cd /home/node/lib/node_modules/wiki && npm install --save $WIKI_CLIENT $WIKI_SERVER"
+ARG WIKI_PACKAGE=wiki@0.21.2
+RUN su node -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su node -c "mkdir -p .wiki"
 VOLUME "/home/node/.wiki"
 EXPOSE 3000
