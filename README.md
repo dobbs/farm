@@ -37,16 +37,24 @@ The last non-breaking revision is 0.52.0 https://github.com/dobbs/farm/tree/0.52
 
 This image's tag does not match the version of the included wiki
 software. Our version indicates the scale of changes in this tiny
-devops pipeline. For example, when we changed the `USER` directive and
-removed the wiki config generation scripts, we bumped the major
-version from 0.50.x to 1.0.x.
+devops pipeline.
 
-Notes to self:
+Testing new images locally:
 
 ``` bash
-docker build --tag dobbs/farm:1.0.2 .
-git tag -am "" '1.0.2'
-git push origin '1.0.2'
+IMAGE=dobbs/farm:1.0.7-pre-22
+docker build --tag $IMAGE .
+```
+
+With the local kubernetes example (see [examples/k8s/README.md](./examples/k8s/README.md)):
+
+``` bash
+export IMAGE=dobbs/farm:1.0.7-pre-22
+docker build --tag $IMAGE .
+k3d image import $IMAGE --cluster wiki
+cd ./examples/k8s/
+perl -pi -e 's{^(\s+image:\s*).*$}{\1 $ENV["IMAGE"]}' wiki.yaml
+kubectl apply -f wiki.yaml
 ```
 
 The repos in Dockerhub and GitHub are configured to automatically build new tags.
