@@ -5,7 +5,7 @@ using wiki to drive some learning about kubernetes.
 
 # We're using MacOS, Docker Desktop, and k3d
 
-    brew cask install docker
+    brew install --cask docker
     brew install k3d
 
     mkdir -p ~/.wiki-k8s ~/workspace/fedwiki
@@ -26,13 +26,16 @@ using wiki to drive some learning about kubernetes.
       "secure_cookie": false,
       "security_type": "friends",
       "wikiDomains": {
-        "simple.localtest.me": {
-          "id": "/home/node/.wiki/config.owner.json"
+        "localhost": {
+          "id": "/home/node/.wiki/localhost.owner.json"
+        },
+        "example.com": {
+          "id": "/home/node/.wiki/example.com.owner.json"
         }
       }
     }
 
-# example ~/.wiki-k8s/config.owner.json
+# example ~/.wiki-k8s/localhost.owner.json
 
 `.friend.secret` must match the `.admin` field from `config.json`
 
@@ -50,4 +53,4 @@ using wiki to drive some learning about kubernetes.
 
 # Play with the wiki
 
-    open http://simple.localtest.me
+    open http://wiki.localhost

@@ -50,22 +50,15 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: simple-wiki
-  annotations:
-    kubernetes.io/ingress.class: traefik
+  name: wiki
 spec:
   rules:
-  - host: simple.localtest.me
-    http:
+  - host: "*.localhost"
+    http: &wiki
       paths:
       - path: /
         backend:
           serviceName: wiki-service
           servicePort: http
-  - host: "*.simple.localtest.me"
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: wiki-service
-          servicePort: http
+  # - host: "*.example.com"
+  #   http: *wiki
