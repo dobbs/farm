@@ -64,5 +64,5 @@ The repos in Dockerhub and GitHub are configured to automatically build new tags
 Invoke Dockerhub and GitHub integration.
 ``` bash
 git tag -am "" '1.0.2-pre-0217'
-git push --atomic origin master '1.0.2-pre-0217'
+git push --atomic origin main '1.0.2-pre-0217'
 ```
