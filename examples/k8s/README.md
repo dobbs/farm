@@ -49,7 +49,7 @@ using wiki to drive some learning about kubernetes.
 
 # Deploy Wiki
 
-    kubectl apply -f wiki.yaml
+    kubectl apply -f http://deploy.wiki.do/assets/wiki/wiki.yaml
 
 # Play with the wiki
 
