@@ -26,27 +26,30 @@ devops pipeline.
 Testing new images locally:
 
 ``` bash
-IMAGE=dobbs/farm:1.0.7-pre-22
+TAG=1.0.8-prefer-title
+IMAGE=dobbs/farm:$TAG
 docker build --tag $IMAGE .
 ```
 
 With the local kubernetes example (see [examples/k8s/README.md](./examples/k8s/README.md)):
 
 ``` bash
-export IMAGE=dobbs/farm:1.0.7-pre-22
-docker build --tag $IMAGE .
 k3d image import $IMAGE --cluster wiki
-cd ./examples/k8s/
-perl -pi -e 's{^(\s+image:\s*).*$}{\1 $ENV["IMAGE"]}' wiki.yaml
-kubectl apply -f wiki.yaml
+kubectl patch deployment.apps/wiki-deployment \
+  --type='json' \
+  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$IMAGE'"}]'
 ```
 
-The repos in Dockerhub and GitHub are configured to automatically build new tags.
+# Publish containers with experimental code
 
-# Publish experimental plugins
-
-Invoke Dockerhub and GitHub integration.
+GitHub
 ``` bash
-git tag -am "" '1.0.2-pre-0217'
-git push --atomic origin main '1.0.2-pre-0217'
+git tag -am "" "$TAG"
+git push --atomic origin main "$TAG"
+```
+
+Docker Hub
+
+``` bash
+docker push $IMAGE
 ```
