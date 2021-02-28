@@ -7,7 +7,7 @@ Start Playing Federated Wiki: http://start.fed.wiki
     docker run -p 3000:3000 -it --rm \
       dobbs/farm
 
-Visit http://localhost:3000 and http://anything.localtest.me:3000
+Visit http://localhost:3000 and http://anything.localhost:3000
 
 ### Run a local wiki that will survive a reboot
 
