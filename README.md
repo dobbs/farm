@@ -52,6 +52,7 @@ Docker Hub
 
 ``` bash
 docker build --tag $IMAGE .  # if you haven't already
+docker build --tag dobbs/farm:latest .  # if you haven't already
 docker push $IMAGE
 docker push dobbs/farm:latest
 ```
