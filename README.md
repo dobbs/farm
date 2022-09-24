@@ -51,6 +51,7 @@ git push --atomic origin main "$TAG"
 Docker Hub
 
 ``` bash
+docker build --tag $IMAGE .  # if you haven't already
 docker push $IMAGE
 docker push dobbs/farm:latest
 ```
