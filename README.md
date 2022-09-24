@@ -40,7 +40,7 @@ kubectl patch deployment.apps/wiki-deployment \
   -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$IMAGE'"}]'
 ```
 
-# Publish containers with experimental code
+# Publish containers
 
 GitHub
 ``` bash
@@ -52,4 +52,5 @@ Docker Hub
 
 ``` bash
 docker push $IMAGE
+docker push dobbs/farm:latest
 ```
