@@ -26,23 +26,15 @@ devops pipeline.
 Testing new images locally:
 
 ``` bash
-TAG=1.0.8-prefer-title
+TAG=1.0.14-prefer-title
 IMAGE=dobbs/farm:$TAG
 docker build --tag $IMAGE .
-```
-
-With the local kubernetes example (see [examples/k8s/README.md](./examples/k8s/README.md)):
-
-``` bash
-k3d image import $IMAGE --cluster wiki
-kubectl patch deployment.apps/wiki-deployment \
-  --type='json' \
-  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$IMAGE'"}]'
 ```
 
 # Publish containers
 
 GitHub
+
 ``` bash
 git tag -am "" "$TAG"
 git push --atomic origin main "$TAG"
@@ -55,4 +47,15 @@ docker build --tag $IMAGE .  # if you haven't already
 docker build --tag dobbs/farm:latest .  # if you haven't already
 docker push $IMAGE
 docker push dobbs/farm:latest
+```
+
+# Experiment with K8S
+
+With the local kubernetes example (see [examples/k8s/README.md](./examples/k8s/README.md)):
+
+``` bash
+k3d image import $IMAGE --cluster wiki
+kubectl patch deployment.apps/wiki-deployment \
+  --type='json' \
+  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$IMAGE'"}]'
 ```
