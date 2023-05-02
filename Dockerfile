@@ -5,7 +5,7 @@ RUN apk add --update --no-cache \
   git \
   jq
 WORKDIR "/home/node"
-ARG WIKI_PACKAGE=wiki@0.28.0
+ARG WIKI_PACKAGE=wiki@0.29.0
 RUN su node -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su node -c "mkdir -p .wiki"
 VOLUME "/home/node/.wiki"
