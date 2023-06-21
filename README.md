@@ -31,7 +31,7 @@ IMAGE=dobbs/farm:$TAG
 docker build --tag $IMAGE .
 ```
 
-# Publish containers
+# Publish container images
 
 GitHub
 
@@ -48,6 +48,18 @@ docker build --tag dobbs/farm:latest .  # if you haven't already
 docker push $IMAGE
 docker push dobbs/farm:latest
 ```
+
+## Publish with updated wiki dependencies
+
+We published 1.0.16 on May 2. The friends security plugin was updated
+to 0.2.5 on May 17. See [fedwiki/wiki-security-friends](https://github.com/fedwiki/wiki-security-friends/tree/bf8a1631806829cb8c20614be1642d80b0bd5cfb)
+
+We built a new image with no changes to our Dockerfile and published
+it as version 1.0.17. The only change for 1.0.17 is this updated
+README.md so we can remember how to do this again in the future.
+
+We chose our tag and followed exactly the same steps above to publish
+container images.
 
 # Experiment with K8S
 
