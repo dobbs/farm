@@ -49,6 +49,18 @@ docker push $IMAGE
 docker push dobbs/farm:latest
 ```
 
+Sometimes we publish a docker image with no changes to the wiki source
+code. This allows us to pick up non-breaking changes to some of the
+plugins. Using `--no-cache` ensures docker re-runs this line from the
+`Dockerfile` in particular: `npm install -g --prefix . $WIKI_PACKAGE`.
+
+``` bash
+docker build --no-cache --tag $IMAGE .  # if you haven't already
+docker build --tag dobbs/farm:latest .  # if you haven't already
+docker push $IMAGE
+docker push dobbs/farm:latest
+```
+
 ## Publish with updated wiki dependencies
 
 We published 1.0.16 on May 2. The friends security plugin was updated
