@@ -31,6 +31,12 @@ IMAGE=dobbs/farm:$TAG
 docker build --tag $IMAGE .
 ```
 
+You might also want to remember the most recent tag:
+
+``` bash
+git tag --list | tail -1
+```
+
 # Publish container images
 
 GitHub
