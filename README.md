@@ -37,6 +37,12 @@ You might also want to remember the most recent tag:
 git tag --list | tail -1
 ```
 
+Update WIKI_VERSIONS.txt
+
+``` bash
+docker run --rm dobbs/farm:1.0.21 wiki --version > WIKI_VERSIONS.txt
+```
+
 # Publish container images
 
 GitHub
