@@ -45,18 +45,20 @@ docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
 
 # Publish container images
 
-GitHub
-
+End-to-end recipe to publish a new version. May require judgment in
+the steps before git push and docker push.
 ``` bash
+# Emit current version to standard error and next version to standard out.
+# use that to assign the next TAG
+TAG="$(git tag --list | tail -1 | perl -lne 'print STDERR $_;s/(\d+)$/$1+1/e;print $_;')"
+IMAGE=dobbs/farm:$TAG
+docker build --no-cache --tag $IMAGE .
+docker build --tag dobbs/farm:latest .
+docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
+git add
+git commit -m ""
 git tag -am "" "$TAG"
 git push --atomic origin main "$TAG"
-```
-
-Docker Hub
-
-``` bash
-docker build --tag $IMAGE .  # if you haven't already
-docker build --tag dobbs/farm:latest .  # if you haven't already
 docker push $IMAGE
 docker push dobbs/farm:latest
 ```
@@ -65,25 +67,6 @@ Sometimes we publish a docker image with no changes to the wiki source
 code. This allows us to pick up non-breaking changes to some of the
 plugins. Using `--no-cache` ensures docker re-runs this line from the
 `Dockerfile` in particular: `npm install -g --prefix . $WIKI_PACKAGE`.
-
-``` bash
-docker build --no-cache --tag $IMAGE .  # if you haven't already
-docker build --tag dobbs/farm:latest .  # if you haven't already
-docker push $IMAGE
-docker push dobbs/farm:latest
-```
-
-## Publish with updated wiki dependencies
-
-We published 1.0.16 on May 2. The friends security plugin was updated
-to 0.2.5 on May 17. See [fedwiki/wiki-security-friends](https://github.com/fedwiki/wiki-security-friends/tree/bf8a1631806829cb8c20614be1642d80b0bd5cfb)
-
-We built a new image with no changes to our Dockerfile and published
-it as version 1.0.17. The only change for 1.0.17 is this updated
-README.md so we can remember how to do this again in the future.
-
-We chose our tag and followed exactly the same steps above to publish
-container images.
 
 # Experiment with K8S
 
