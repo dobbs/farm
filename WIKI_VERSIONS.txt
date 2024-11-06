@@ -1,9 +1,9 @@
 wiki: 0.37.0
-wiki-server: 0.25.0
-wiki-client: 0.30.0
+wiki-server: 0.25.2
+wiki-client: 0.30.1
 wiki-security-friends: 0.2.5
 wiki-security-passportjs: 0.10.0
-wiki-plugin-activity: 0.6.0
+wiki-plugin-activity: 0.6.1
 wiki-plugin-assets: 0.5.1
 wiki-plugin-audio: 0.2.0
 wiki-plugin-bars: 0.5.0
@@ -25,7 +25,7 @@ wiki-plugin-html: 0.5.1
 wiki-plugin-image: 0.5.0
 wiki-plugin-line: 0.5.0
 wiki-plugin-map: 0.8.0
-wiki-plugin-markdown: 0.4.1
+wiki-plugin-markdown: 0.4.2
 wiki-plugin-math: 0.1.0
 wiki-plugin-metabolism: 0.3.0
 wiki-plugin-method: 0.3.0
