@@ -68,6 +68,56 @@ code. This allows us to pick up non-breaking changes to some of the
 plugins. Using `--no-cache` ensures docker re-runs this line from the
 `Dockerfile` in particular: `npm install -g --prefix . $WIKI_PACKAGE`.
 
+# Experiment with a local farm
+
+This example shows a configuration using the friends security plugin
+and making all the wikis under the localhost domain owned by the same
+author. The browser will demand a login for each localhost subdomain,
+but will accept the same password for authentication.
+
+## Create ~/tmp/wiki/config.json
+
+    {
+      "admin": "any memorable password",
+      "autoseed": true,
+      "farm": true,
+      "cookieSecret": "any random string",
+      "secure_cookie": false,
+      "security_type": "friends",
+      "wikiDomains": {
+        "localhost": {
+          "id": "/home/node/.wiki/localhost.owner.json"
+        }
+      }
+    }
+
+## Create ~/tmp/wiki/localhost.owner.json
+
+`.friend.secret` must match the `.admin` field from `config.json`
+
+    {
+      "name": "The Owner",
+      "friend": {
+        "secret": "any memorable password"
+      }
+    }
+
+## Run a local wiki that will use those config files and survive a reboot
+
+    docker run -p 3000:3000 -it --rm \
+      -v ~/tmp/wiki:/home/node/.wiki \
+      dobbs/farm
+
+## Visit a couple local wiki sites
+
+http://foo.localhost:3000
+http://bar.localhost:3000
+
+You should be able to log into both of those local sites using
+'any memorable password'. And if you create a few pages in each
+wiki you can examine how the files are laid out in the `~/tmp/wiki`
+folder where you have stored those config files.
+
 # Experiment with K8S
 
 With the local kubernetes example (see [examples/k8s/README.md](./examples/k8s/README.md)):
