@@ -56,7 +56,7 @@ docker build --no-cache --tag $IMAGE .
 docker build --tag dobbs/farm:latest .
 docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
 git add .
-git commit -m "update WIKI_VERSIONS.txt for $TAG"
+git commit -m "upgrade to wiki 0.38.0"
 git tag -am "" "$TAG"
 git push --atomic origin main "$TAG"
 docker push $IMAGE
