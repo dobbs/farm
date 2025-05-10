@@ -1,5 +1,5 @@
-wiki: 0.38.0
-wiki-client: 0.31.0
+wiki: 0.38.1
+wiki-client: 0.31.1
 wiki-plugin-activity: 0.7.0
 wiki-plugin-assets: 0.7.0
 wiki-plugin-audio: 0.3.0
@@ -41,4 +41,4 @@ wiki-plugin-transport: 0.3.0
 wiki-plugin-video: 0.4.0
 wiki-security-friends: 0.2.5
 wiki-security-passportjs: 0.11.1
-wiki-server: 0.25.9
+wiki-server: 0.25.10
