@@ -1,7 +1,6 @@
 FROM node:lts-alpine
 
 RUN apk add --update --no-cache \
-  dumb-init \
   git \
   jq
 WORKDIR "/home/node"
@@ -13,5 +12,4 @@ EXPOSE 3000
 USER node
 ENV PATH="${PATH}:/home/node/bin"
 ENV NPM_CONFIG_PREFIX="${HOME}"
-ENTRYPOINT ["dumb-init"]
 CMD ["wiki", "--farm", "--security_type=friends"]
