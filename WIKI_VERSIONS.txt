@@ -1,7 +1,7 @@
-wiki: 0.38.1
-wiki-client: 0.31.1
+wiki: 0.38.3
+wiki-client: 0.31.2
 wiki-plugin-activity: 0.7.0
-wiki-plugin-assets: 0.7.0
+wiki-plugin-assets: 0.7.2
 wiki-plugin-audio: 0.3.0
 wiki-plugin-bars: 0.6.0
 wiki-plugin-calculator: 0.6.0
@@ -18,7 +18,7 @@ wiki-plugin-future: 0.4.1
 wiki-plugin-graphviz: 0.11.5
 wiki-plugin-grep: 1.1.1
 wiki-plugin-html: 0.6.0
-wiki-plugin-image: 0.6.0
+wiki-plugin-image: 0.6.3
 wiki-plugin-line: 0.6.0
 wiki-plugin-map: 0.9.0
 wiki-plugin-markdown: 0.5.0
