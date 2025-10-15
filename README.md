@@ -53,7 +53,7 @@ the steps before git push and docker push.
 TAG="$(git tag --list | tail -1 | perl -lne 'print STDERR $_;s/(\d+)$/$1+1/e;print $_;')"
 IMAGE=dobbs/farm:$TAG
 docker build --no-cache --tag $IMAGE .
-docker build --tag dobbs/farm:latest .
+docker tag $IMAGE dobbs/farm:latest
 docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
 git add .
 git commit -m "upgrade to wiki 0.38.0"
