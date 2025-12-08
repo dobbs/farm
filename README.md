@@ -28,7 +28,7 @@ Testing new images locally:
 ``` bash
 TAG=1.0.14-prefer-title
 IMAGE=dobbs/farm:$TAG
-docker build --tag $IMAGE .
+docker buildx build --tag $IMAGE --platform linux/amd64,linux/arm64 .
 ```
 
 You might also want to remember the most recent tag:
@@ -52,7 +52,7 @@ the steps before git push and docker push.
 # use that to assign the next TAG
 TAG="$(git tag --list | tail -1 | perl -lne 'print STDERR $_;s/(\d+)$/$1+1/e;print $_;')"
 IMAGE=dobbs/farm:$TAG
-docker build --no-cache --tag $IMAGE .
+docker buildx build --no-cache --tag $IMAGE --platform linux/amd64,linux/arm64 .
 docker tag $IMAGE dobbs/farm:latest
 docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
 git add .
