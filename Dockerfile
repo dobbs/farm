@@ -6,7 +6,7 @@ RUN apk add --update --no-cache \
 WORKDIR "/home/node"
 ARG PATH
 ARG HOME
-ARG WIKI_PACKAGE=wiki@0.40.0
+ARG WIKI_PACKAGE=wiki@0.40.1
 RUN su node -c "npm install -g --prefix . $WIKI_PACKAGE"
 RUN su node -c "mkdir -p .wiki"
 VOLUME "/home/node/.wiki"
