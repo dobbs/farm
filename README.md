@@ -54,7 +54,7 @@ TAG="$(git tag --list | tail -1 | perl -lne 'print STDERR $_;s/(\d+)$/$1+1/e;pri
 IMAGE=dobbs/farm:$TAG
 docker buildx build --no-cache --tag $IMAGE --platform linux/amd64,linux/arm64 .
 docker tag $IMAGE dobbs/farm:latest
-docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
+docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.json
 git add .
 git commit -m "upgrade to wiki 0.38.0"
 git tag -am "" "$TAG"
