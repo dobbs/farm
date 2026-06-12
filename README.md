@@ -37,10 +37,10 @@ You might also want to remember the most recent tag:
 git tag --list | tail -1
 ```
 
-Update WIKI_VERSIONS.txt
+Update WIKI_VERSIONS.json
 
 ``` bash
-docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.txt
+docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.json
 ```
 
 # Publish container images
