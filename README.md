@@ -56,12 +56,17 @@ docker buildx build --no-cache --tag $IMAGE --platform linux/amd64,linux/arm64 .
 docker tag $IMAGE dobbs/farm:latest
 docker run --rm $IMAGE wiki --version > WIKI_VERSIONS.json
 git add .
-git commit -m "upgrade to wiki 0.38.0"
+git commit -m "upgrade to wiki 0.40.1"
 git tag -am "" "$TAG"
 git push --atomic origin main "$TAG"
 docker push $IMAGE
 docker push dobbs/farm:latest
 ```
+
+Announce the new image in matrix:
+
+    I've published a new docker image with wiki 0.40.1: dobbs/farm:1.2.3
+    https://hub.docker.com/repository/docker/dobbs/farm/tags
 
 Sometimes we publish a docker image with no changes to the wiki source
 code. This allows us to pick up non-breaking changes to some of the
